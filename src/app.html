@@ -6,7 +6,23 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		%sveltekit.head%
 	</head>
-	<body data-sveltekit-preload-data="hover">
-		<div style="display: contents">%sveltekit.body%</div>
+	<body class="body" data-sveltekit-preload-data="hover">
+		<div style="display: contents;">%sveltekit.body%</div>
 	</body>
 </html>
+<style>
+	html {
+		font-size: 10px;
+	}
+
+	.body {
+		background-image: url(%sveltekit.assets%/peps.jpg); 
+		background-size: cover; 
+		background-position: center 20%; 
+		background-repeat: no-repeat; 
+		background-color: black;
+		color: white;
+		font-size: 5rem;
+		text-shadow: 5px 5px #000;
+	}
+</style>
