@@ -11,30 +11,9 @@
  * other stuff, login, get user id
  * https://supabase.com/docs/reference/javascript/auth-api - just use that and github
  */
-// insert
-// const { data, error } = await supabase
-//  	.from('Sequence')
-//  	.insert([
-// 		{ 
-// 			sequence: { "hi!!!": "there!!" },
-// 			user_id: 1,
-// 			name: "frist"
-// 		},
-//  	])
-
-// update
-// const { error } = await supabase
-//  	.from('Sequence')
-//  	.update([
-// 		{ 
-// 			sequence: { "ohhadssadai!!!": "the?!?!re!!" },
-// 			name: "frost"
-// 		}
-//  	])
-// 	.eq('id', 96)
 
 import { error } from '@sveltejs/kit'
-import { _fetchSequenceById, type PageData } from "../api/sequence/+server";
+import { _fetchSequenceById, _updateSequenceById, type PageData, type Sequence } from "../api/sequence/+server";
 
 
 export async function load({params}): Promise<PageData | null> {
@@ -50,4 +29,14 @@ export async function load({params}): Promise<PageData | null> {
 	}
 
 	error(404, 'Not found');
+}
+
+export const actions = {
+	update: async ({ params, request }) => {
+		console.log(params.sequence)
+		const formData: any = await request.formData();
+		const sequenceData = JSON.parse(formData.get('sequence'))
+		console.log(JSON.parse(formData.get('sequence')))
+		const sequence = await _updateSequenceById(+params.sequence, sequenceData)
+	}
 }

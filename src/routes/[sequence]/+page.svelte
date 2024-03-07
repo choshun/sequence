@@ -1,8 +1,67 @@
 <script>
-	
 	// maybe type? use interface from server?
-	export let data
+	import { enhance } from '$app/forms';
+	export let data;
 	console.log(data)
 </script>
+<div class="wrapper">
+
+
 <!-- Make value a form, submit and update -->
-best page with sequence: {JSON.stringify(data.sequence)}!!
+<form
+	method="POST"
+	class="form-sequence"
+	action="?/update"
+	use:enhance={() => {
+		return ({ update }) => update({reset: false})
+	}}
+>
+	<pre class="pre">{ JSON.stringify(data, null, 4) }</pre>
+	<label for="sequence-input" class="label-sequence">
+		Sequence
+		<textarea name="sequence" id="sequence-input" class="input-sequence">{ JSON.stringify(data.sequence.sequence, null, 4) }</textarea>
+	</label>
+
+	<button>
+		update
+	</button>
+</form>
+
+</div>
+
+<style lang="scss">
+	.wrapper {
+		display: flex;
+		align-items:center;
+	}
+
+	.pre {
+		font-size: 2rem;
+	}
+
+	.form-sequence {
+		background-color: #ff00bf;
+		text-shadow: none;
+		padding: 3rem;
+		display: flex;
+		row-gap: 2rem;
+		width: 40rem;
+		flex-direction: column;
+	}
+
+	.label-sequence {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		row-gap: 2rem;
+	}
+
+	.input-sequence {
+		height: 20rem;
+		width: 100%;
+		padding: 2rem;
+		box-sizing: border-box;
+		background-color: #000;
+		color: #fff;
+	}
+</style>

@@ -9,7 +9,7 @@ const supabase = createClient(projectUrl, projectKey, {
   	},
 })
 
-interface Sequence {
+export interface Sequence {
 	id: number,
 	sequence: any, // type eventually
 	history: any, // type eventually
@@ -33,4 +33,15 @@ export async function _fetchSequenceById(id: number): Promise<Sequence | null> {
 	console.log(data[0])
 
 	return data[0];
+}
+
+export async function _updateSequenceById(id: number, sequence: any): Promise<Sequence | null> {
+	const { data } = await supabase
+	 	.from('Sequence')
+	 	.update([
+			{ 
+				sequence
+			}
+	 	])
+		.eq('id', id)
 }
