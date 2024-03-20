@@ -1,14 +1,8 @@
-import { createClient } from '@supabase/supabase-js'
-import { env } from '$env/dynamic/private';
+import { _supabase } from "../supabase/+server"
 
-const projectUrl = env?.SUPABASE_PROJECT_URL ? env.SUPABASE_PROJECT_URL : process.env.SUPABASE_PROJECT_URL as string;
-const projectKey = env?.SUPABASE_API_KEY ? env.SUPABASE_API_KEY : process.env.SUPABASE_API_KEY as string;
-const supabase = createClient(projectUrl, projectKey, {
-	global: {
-		fetch: (...args) => fetch(...args),
-  	},
-})
+console.log(_supabase)
 
+// I should probably call this session or something
 export interface Sequence {
 	id: number,
 	sequence: any, // type eventually
@@ -17,11 +11,18 @@ export interface Sequence {
 }
 
 export interface PageData {
-	sequence: Sequence
+	sequence: Sequence,
+	count: number,
+	stream: any
 }
+// export async function _fetchSequenceById(id: number): Promise<Sequence | null> {
+export async function _fetchSequenceById(id: number) {
+	/**
+	 * essentially I want to call this onload, then use a stream after
+	 * hopefully updatedby the observable
+	 */
 
-export async function _fetchSequenceById(id: number): Promise<Sequence | null> {
-	const { data } = await supabase
+	const { data } = await _supabase
 		.from("Sequence")
 		.select('id, sequence, history, name')
 		.eq('id', id) // couldn't find byPk
@@ -29,14 +30,14 @@ export async function _fetchSequenceById(id: number): Promise<Sequence | null> {
 	if (data === null) {
 		return null
 	}
-
+	
 	console.log(data[0])
 
 	return data[0];
 }
 
 export async function _updateSequenceById(id: number, sequence: any): Promise<Sequence | null> {
-	const { data } = await supabase
+	const { data } = await _supabase
 	 	.from('Sequence')
 	 	.update([
 			{ 

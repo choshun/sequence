@@ -1,8 +1,30 @@
 <script>
+	import { browser } from "$app/environment";
+
+	$: result = 'default'
+	if (browser) {
+		async function getStream() {
+			const response = await fetch('/api/supabase')
+			const reader = response.body?.pipeThrough(new TextDecoderStream()).getReader()
+			while (true) {
+				// @ts-ignore
+				const { value, done } = await reader.read();
+				if (done) break;
+
+				console.log(JSON.parse(value).sequence)
+				result = JSON.stringify(JSON.parse(value).sequence)
+				console.log(result)
+			}
+		}
+
+		console.log(result)
+		getStream()
+	}
+
 	// maybe type? use interface from server?
 	import { enhance } from '$app/forms';
-	export let data;
-	console.log(data)
+	export let data; console.log(data.server.sequence.sequence)
+	console.log(data.server.sequence.sequence)
 </script>
 <div class="wrapper">
 
@@ -16,10 +38,11 @@
 		return ({ update }) => update({reset: false})
 	}}
 >
+	{ result }
 	<pre class="pre">{ JSON.stringify(data, null, 4) }</pre>
 	<label for="sequence-input" class="label-sequence">
 		Sequence
-		<textarea name="sequence" id="sequence-input" class="input-sequence">{ JSON.stringify(data.sequence.sequence, null, 4) }</textarea>
+		<textarea name="sequence" id="sequence-input" class="input-sequence">{ JSON.stringify(data.server.sequence.sequence, null, 4) }</textarea>
 	</label>
 
 	<button>

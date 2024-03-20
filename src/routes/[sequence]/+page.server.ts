@@ -13,20 +13,71 @@
  */
 
 import { error } from '@sveltejs/kit'
-import { _fetchSequenceById, _updateSequenceById, type PageData, type Sequence } from "../api/sequence/+server";
+import { _fetchSequenceById, _updateSequenceById, _sequence$, type PageData, type Sequence, _fetchSequenceStreamById } from "../api/sequence/+server";
+let count: number = 0
+let sequence: any
+let updatedSequence: any
 
+console.log("hi");
 
+// _sequence$.subscribe((newSequence) => {
+// 	console.log("update", newSequence.sequence)
+// 	count++;
+// 	console.log("test", count)
+// 	// sequence = newSequence
+// 	// sequence = newSequence;
+// 	updatedSequence = newSequence
+// })
+
+// https://stackoverflow.com/questions/74330190/how-to-respond-with-a-stream-in-a-sveltekit-server-load-function
+// https://kit.svelte.dev/docs/routing#server
 export async function load({params}): Promise<PageData | null> {
-	console.log(params)
-	const sequence = await _fetchSequenceById(+params.sequence)
+	// load is called every update - need to put subscribe outside of load
+	// if (count < 3) {
+	const sequence = await _fetchSequenceById(+params.sequence) as any
+	// const stream = await _fetchSequenceStreamById(97)
+	// let test: WritableStream<any> = new WritableStream()
+	// console.log(stream)
+	
 
+	
+	// } else {
+		// sequence = {
+		// 	sequence: {
+		// 		id: 97,
+		// 		history: "",
+		// 		sequence: {
+		// 			"it": "updates?"
+		// 		},
+		// 		name: "shwa"
+		// 	}
+		// }
+
+		// sequence = updatedSequence
+
+	//}
+	// if (!sequence) {
+	// const stream = await sequence;
+	// fuck, might need to do stream here
+	// console.log(stream)
 	console.log(sequence)
-
+	console.log("fired again?")
+	//}
+	console.log("test", count)
+	console.log(sequence)
+	count++
 	if (sequence) {
+		console.log(sequence.sequence);
 		return {
-			sequence
+			sequence,
+			count,
+			// stream
 		}
 	}
+
+	
+	console.log(sequence)
+
 
 	error(404, 'Not found');
 }
