@@ -1,9 +1,25 @@
 <script>
 	import { browser } from "$app/environment";
 
+	// let netlifySupabaseResponse: any = "test";
+
+	async function getNetlifySupa() {
+		// const netlifySupabaseResponse = await fetch('http://localhost:8888/stream')
+		// CORS
+		// console.log(netlifySupabaseResponse)
+	}
+	
+	// getNetlifySupa()
+
+
 	$: result = 'default'
+	// maybe move to page.ts?
 	if (browser) {
 		async function getStream() {
+			// @todo 3/24/24
+			// This works! http://localhost:8888/stream, after doing dev:netlify
+			// Use this for local, but try to link up with https://cho-cho-choo-choo.com.netlify.app/stream
+			// chrome is being (is a good way) aggressive with seeing the response, maybe try to show the example stream
 			const response = await fetch('/api/supabase')
 			const reader = response.body?.pipeThrough(new TextDecoderStream()).getReader()
 			while (true) {
@@ -37,7 +53,7 @@
 	use:enhance={() => {
 		return ({ update }) => update({reset: false})
 	}}
->
+>	
 	{ result }
 	<pre class="pre">{ JSON.stringify(data, null, 4) }</pre>
 	<label for="sequence-input" class="label-sequence">
