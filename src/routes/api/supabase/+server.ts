@@ -1,13 +1,14 @@
 import { createClient } from '@supabase/supabase-js'
 import { env } from '$env/dynamic/private';
 import { BehaviorSubject, Observable, ReplaySubject, first, last, takeLast } from 'rxjs'
-import type { Context } from "@netlify/edge-functions";
+// import type { Context } from "@netlify/edge-functions";
 
 let sequenceSubject = new BehaviorSubject<any>(1)
 const _sequence$: Observable<any> = sequenceSubject.asObservable();
 const projectUrl = env?.SUPABASE_PROJECT_URL ? env.SUPABASE_PROJECT_URL : process.env.SUPABASE_PROJECT_URL as string;
 const projectKey = env?.SUPABASE_API_KEY ? env.SUPABASE_API_KEY : process.env.SUPABASE_API_KEY as string;
 
+// Might have to do one for dev, the other for prod?
 export const _supabase = createClient(projectUrl, projectKey, {
 	global: {
 		fetch: (...args) => fetch(...args),
@@ -37,6 +38,9 @@ const channel = _supabase
 
 // gawdammit
 // https://edge-functions-examples.netlify.app/example/server-sent-events
+
+// just updating encoding does not work:
+// https://docs.netlify.com/edge-functions/get-started/
 export function GET(id: number) {
 	const encoder = new TextEncoder();
 	const stream = new ReadableStream({
