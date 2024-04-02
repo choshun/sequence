@@ -1,13 +1,10 @@
 <script>
 	import { browser } from "$app/environment";
+	import { enhance } from '$app/forms';
 	$: result = 'default'
 
 	if (browser) {
 		async function getStream() {
-			// @todo 3/24/24
-			// This works! http://localhost:8888/stream, after doing dev:netlify
-			// Use this for local, but try to link up with https://cho-cho-choo-choo.com.netlify.app/stream
-			// chrome is being (is a good way) aggressive with seeing the response, maybe try to show the example stream
 			const streamUrl = import.meta.env.PROD ? location.origin + '/stream' : '/api/supabase'
 			const response = await fetch(streamUrl)
 			const reader = response.body?.pipeThrough(new TextDecoderStream()).getReader()
@@ -22,9 +19,8 @@
 		getStream()
 	}
 
-	// maybe type? use interface from server?
-	import { enhance } from '$app/forms';
 	export let data; console.log(data.server.sequence.sequence)
+	// Use server, then stream after load?
 	console.log(data.server.sequence.sequence)
 </script>
 <div class="wrapper">
