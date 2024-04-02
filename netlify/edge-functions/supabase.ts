@@ -26,12 +26,10 @@ const channel = _supabase
 
 
 export default async (request: Request, context: Context) => {
-	let index = 0
 	const encoder = new TextEncoder();
 	const body = new ReadableStream({
 		start(controller) {
 			_sequence$.pipe().subscribe((session) => {
-				console.log(JSON.stringify(session.sequence))
 				controller.enqueue(encoder.encode(`${JSON.stringify(session)}`))
 			})
 		},
