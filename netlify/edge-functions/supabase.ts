@@ -6,10 +6,11 @@ let sequenceSubject = new BehaviorSubject<any>(1)
 const _sequence$: Observable<any> = sequenceSubject.asObservable();
 const projectUrl = Netlify.env.get("SUPABASE_PROJECT_URL");
 const projectKey = Netlify.env.get("SUPABASE_API_KEY");
-const _supabase = createClient(projectUrl, projectKey, {
+
+export const _supabase = createClient(projectUrl, projectKey, {
 	global: {
 		fetch: (...args) => fetch(...args),
-  	},
+  	}
 })
 const channel = _supabase
 	.channel('schema-db-changes')
@@ -23,7 +24,6 @@ const channel = _supabase
 			sequenceSubject.next(payload.new)
 		})
 		.subscribe()
-
 
 export default async (request: Request, context: Context) => {
 	const encoder = new TextEncoder();

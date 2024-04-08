@@ -1,4 +1,5 @@
 import { _supabase } from "../supabase/+server"
+// import { supabaseClient } from '$lib/supabaseClient';
 
 console.log(_supabase)
 
@@ -13,7 +14,9 @@ export interface Sequence {
 export interface PageData {
 	sequence: Sequence,
 	count: number,
-	stream: any
+	user: any,
+	projectUrl: string,
+	projectKey: string,
 }
 // export async function _fetchSequenceById(id: number): Promise<Sequence | null> {
 export async function _fetchSequenceById(id: number) {
@@ -21,6 +24,9 @@ export async function _fetchSequenceById(id: number) {
 	 * essentially I want to call this onload, then use a stream after
 	 * hopefully updatedby the observable
 	 */
+	const { data: { session } } = await _supabase.auth.getSession();
+  	const accessToken = session?.access_token;
+	console.log("accessToken", accessToken)
 
 	const { data } = await _supabase
 		.from("Sequence")
@@ -36,6 +42,7 @@ export async function _fetchSequenceById(id: number) {
 	return data[0];
 }
 
+// Should be able to use this for updating row for userId
 export async function _updateSequenceById(id: number, sequence: any): Promise<Sequence | null> {
 	const { data } = await _supabase
 	 	.from('Sequence')
