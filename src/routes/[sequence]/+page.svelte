@@ -41,6 +41,8 @@
 		// make url have sequence id? session id? need to look at row level security
 		// https://supabase.com/docs/guides/auth/auth-deep-dive/auth-deep-dive-jwts, part 2
 		console.log("hullo", data)
+		
+		
 		return data
 	}
 

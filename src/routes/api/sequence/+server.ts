@@ -32,7 +32,7 @@ export async function _fetchSequenceById(id: number) {
 		.from("Sequence")
 		.select('id, sequence, history, name')
 		.eq('id', id) // couldn't find byPk
-		
+	
 	if (data === null) {
 		return null
 	}
@@ -52,4 +52,19 @@ export async function _updateSequenceById(id: number, sequence: any): Promise<Se
 			}
 	 	])
 		.eq('id', id)
+	
+	return data;
+}
+
+export async function _createSequence(sequence: any, id?: number): Promise<Sequence | null> {
+	const { data } = await _supabase
+		.from('Sequence')
+		.insert([
+			{
+				sequence,
+				id: 157
+			}
+		])
+
+	return data
 }

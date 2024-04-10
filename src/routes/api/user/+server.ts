@@ -26,8 +26,10 @@ export async function _signIn() {
 	return data;
 }
 
-export async function _getUser(): Promise<User | null> {
-	const { data: { user } } = await _supabase.auth.getUser()
+export async function _getUser(jwt?: any): Promise<User | null> {
+	const { data: { user } } = await _supabase.auth.getUser(jwt)
+	console.log(user)
+
 	return user
 }
 
