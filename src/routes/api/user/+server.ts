@@ -17,7 +17,7 @@ export async function _signUp() {
 
 	console.log(data)
 
-	return data;
+	return new Response(JSON.stringify(data), { status: 200 })
 }
 
 async function _signIn() {

@@ -1,6 +1,5 @@
 import { error } from '@sveltejs/kit'
 import { _fetchSequenceById, _updateSequenceById, type PageData, type Sequence, _createSequence } from "../api/sequence/+server";
-import { _signIn, _getUser, _getSession, _signOut, _signUp } from '../api/user/+server';
 import { _projectUrl, _projectKey, _supabase } from '../api/supabase/+server';
 
 let count: number = 0
@@ -29,5 +28,4 @@ export const actions = {
 		const userId = formData.get('userId')
 		const sequence = await _updateSequenceById(+params.sequence, sequenceData, userId)
 	}
-
 }
