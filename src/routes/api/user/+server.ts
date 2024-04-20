@@ -1,6 +1,11 @@
 import { _supabase } from "../supabase/+server"
 import { type UserResponse, type User } from '@supabase/supabase-js'
 
+
+export async function POST() {
+	return _signUp()
+}
+
 // https://supabase.com/docs/reference/javascript/auth-api
 // Might be rate limited:
 // https://supabase.com/dashboard/project/nrscqlptbcadomrrqftg/auth/rate-limits
@@ -15,7 +20,7 @@ export async function _signUp() {
 	return data;
 }
 
-export async function _signIn() {
+async function _signIn() {
 	const { data, error } = await _supabase.auth.signInWithPassword({
 		email: 'choshun.snyder@gmail.com',
 		password: 'example-password',

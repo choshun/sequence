@@ -6,7 +6,22 @@
 	import { enhance } from '$app/forms'
 	import { onMount } from 'svelte';
 	$: result = 'default'
+	let userId = '';
 
+	export let data; 
+	console.log(data.server.sequence.sequence)
+
+	// Browser client mostly to get jwt auth from localStorage
+	const supabase = createClient(env.PUBLIC_SUPABASE_PROJECT_URL, env.PUBLIC_SUPABASE_API_KEY, {
+		auth: {
+			autoRefreshToken: true,
+			persistSession: true,
+			detectSessionInUrl: false
+		}
+	})
+
+	// NOTE: this is used to test local SSE
+	// Use server, then stream after load?
 	if (browser) {
 		async function getStream() {
 			const streamUrl = import.meta.env.PROD ? location.origin + '/stream' : '/api/supabase'
@@ -23,75 +38,58 @@
 		getStream()
 	}
 
-	const supabase = createClient(env.PUBLIC_SUPABASE_PROJECT_URL, env.PUBLIC_SUPABASE_API_KEY, {
-		auth: {
-			autoRefreshToken: true,
-			persistSession: true,
-			detectSessionInUrl: false
+	async function getUserId() {
+		const user = await supabase.auth.getUser()
+		if (user.data) {
+			userId = user?.data?.user?.id || ''
+			console.log(userId)
+			return userId
 		}
-	})
-
-	async function signIn() {
-		const { data, error } = await supabase.auth.signInWithPassword({
-			email: 'choshun.snyder@gmail.com',
-			password: 'example-password',
+		
+		const userResponse = await fetch('/api/user', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			}
 		})
-
-		// just update the row?
-		// make url have sequence id? session id? need to look at row level security
-		// https://supabase.com/docs/guides/auth/auth-deep-dive/auth-deep-dive-jwts, part 2
-		console.log("hullo", data)
+		console.log(userResponse)
+		if (userResponse.ok) {
+			const user = await userResponse.json()
+			console.log(user)
+			userId = user.user?.id || ''
+			console.log(user.user?.id)
+		}
 		
-		
-		return data
+		return userId || ''
 	}
 
-	// signIn()
-	
-	// @todo 4/8/2024
-	// make a new supabase client here with passed in credentials
-	// check local storage
-	// 		try to use jwt to use getUser in backend
-	// pass this to backend to update row in supabase, at least the row user_id
-	// pass in backend to update new session table with user_id and session_id. 
-
-
-	export let data; console.log(data.server.sequence.sequence)
-	// Use server, then stream after load?
-	console.log(data.server.sequence.sequence)
-	
 	console.log(data.server)
 	onMount(async () => {
-		const user = await signIn()
-		console.log(user);
-
-		console.log(JSON.parse(localStorage.getItem(env.PUBLIC_SUPABASE_AUTH_KEY)).access_token)
+		userId = await getUserId()
 	})
 	
 </script>
 <div class="wrapper">
-
-
-<!-- Make value a form, submit and update -->
-<form
-	method="POST"
-	class="form-sequence"
-	action="?/update"
-	use:enhance={() => {
-		return ({ update }) => update({reset: false})
-	}}
->	
-	{ result }
-	<pre class="pre">{ JSON.stringify(data, null, 4) }</pre>
-	<label for="sequence-input" class="label-sequence">
-		Sequence
-		<textarea name="sequence" id="sequence-input" class="input-sequence">{ JSON.stringify(data.server.sequence.sequence, null, 4) }</textarea>
-	</label>
-
-	<button>
-		update
-	</button>
-</form>
+	<form
+		method="POST"
+		class="form-sequence"
+		action="?/update"
+		use:enhance={() => {
+			return ({ update }) => update({reset: false})
+		}}
+	>	
+		{ result }
+		<pre class="pre">{ JSON.stringify(data, null, 4) }</pre>
+		<label for="sequence-input" class="label-sequence">
+			Sequence
+			<textarea name="sequence" id="sequence-input" class="input-sequence">{ JSON.stringify(data.server.sequence.sequence, null, 4) }</textarea>
+		</label>
+		<input type="hidden" name="userId" value="{ userId }" />
+		
+		<button>
+			update
+		</button>
+	</form>
 
 </div>
 
