@@ -80,6 +80,7 @@
 	>	
 		{ result }
 		<pre class="pre">{ JSON.stringify(data, null, 4) }</pre>
+		<pre class="pre">user id: {userId}</pre>
 		<label for="sequence-input" class="label-sequence">
 			Sequence
 			<textarea name="sequence" id="sequence-input" class="input-sequence">{ JSON.stringify(data.server.sequence.sequence, null, 4) }</textarea>
