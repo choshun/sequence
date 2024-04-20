@@ -7,20 +7,19 @@ let sequenceSubject = new BehaviorSubject<any>(1)
 const _sequence$: Observable<any> = sequenceSubject.asObservable();
 // make private, use public on netlify
 
-export const _projectUrl = env?.PUBLIC_SUPABASE_PROJECT_URL ? env.PUBLIC_SUPABASE_PROJECT_URL : process.env.SUPABASE_PROJECT_URL as string;
-export const _projectKey = env?.PUBLIC_SUPABASE_API_KEY ? env.PUBLIC_SUPABASE_API_KEY : process.env.SUPABASE_API_KEY as string;
+export const _projectUrl = env?.PUBLIC_SUPABASE_PROJECT_URL ? env.PUBLIC_SUPABASE_PROJECT_URL : process.env.PUBLIC_SUPABASE_PROJECT_URL as string;
+export const _projectKey = env?.PUBLIC_SUPABASE_API_KEY ? env.PUBLIC_SUPABASE_API_KEY : process.env.PUBLIC_SUPABASE_API_KEY as string;
 
 // @todo: 4/7/24 Thinking this should all be in sequence/server?
 export const _supabase = createClient(_projectUrl, _projectKey, {
 	global: {
 		fetch: (...args) => fetch(...args),
-  	}
-	// ,
-	// auth: {
-	// 	autoRefreshToken: true,
-	// 	persistSession: true,
-	// 	detectSessionInUrl: false
-	// }
+  	},
+	auth: {
+		autoRefreshToken: true,
+		persistSession: true,
+		detectSessionInUrl: false
+	}
 })
 
 const channel = _supabase

@@ -4,8 +4,8 @@ import type { Context } from "@netlify/edge-functions";
 
 let sequenceSubject = new BehaviorSubject<any>(1)
 const _sequence$: Observable<any> = sequenceSubject.asObservable();
-const projectUrl = Netlify.env.get("SUPABASE_PROJECT_URL");
-const projectKey = Netlify.env.get("SUPABASE_API_KEY");
+const projectUrl = Netlify.env.get("PUBLIC_SUPABASE_PROJECT_URL");
+const projectKey = Netlify.env.get("PUBLIC_SUPABASE_API_KEY");
 
 export const _supabase = createClient(projectUrl, projectKey, {
 	global: {
