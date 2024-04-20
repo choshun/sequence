@@ -40,7 +40,8 @@
 
 	async function getUserId() {
 		const user = await supabase.auth.getUser()
-		if (user.data) {
+		console.log(user)
+		if (user?.data?.user?.id) {
 			userId = user?.data?.user?.id || ''
 			console.log(userId)
 			return userId
