@@ -1,12 +1,16 @@
-<script>
+<script lang="ts">
 	// import { _projectUrl } from './../api/supabase/+server';
 	import { createClient } from '@supabase/supabase-js'
 	import * as env from '$env/static/public'
 	import { browser } from "$app/environment"
 	import { enhance } from '$app/forms'
 	import { onMount } from 'svelte';
+	import { readonly } from 'svelte/store';
+	import { Sequencer } from './sequencer.js';
+	
 	$: result = 'default'
 	let userId = '';
+	let context: AudioContext | null = null
 
 	export let data; 
 	console.log(data.server.sequence.sequence)
@@ -29,7 +33,7 @@
 			const reader = response.body?.pipeThrough(new TextDecoderStream()).getReader()
 			while (true) {
 				// @ts-ignore
-				const { value, done } = await reader.read()
+				const { value, done } = await reader?.read()
 				if (done) break
 				result = JSON.stringify(JSON.parse(value).sequence)
 			}
@@ -53,10 +57,9 @@
 				'Content-Type': 'application/json'
 			}
 		})
-		console.log(userResponse)
+		
 		if (userResponse.ok) {
 			const user = await userResponse.json()
-			console.log(user)
 			userId = user.user?.id || ''
 			console.log(user.user?.id)
 		}
@@ -67,6 +70,12 @@
 	console.log(data.server)
 	onMount(async () => {
 		userId = await getUserId()
+		console.log(userId)
+		let sequencer: Sequencer = new Sequencer()
+		context = sequencer.getContext()
+		console.log(context)
+		await sequencer.loadBuffers(sequencer.testSamples.map((sample) => sample.sample))
+		console.log(sequencer.getBuffers())
 	})
 	
 </script>
